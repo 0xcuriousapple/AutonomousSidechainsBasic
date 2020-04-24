@@ -1,0 +1,51 @@
+{
+  "name": "AutonomousSidechains",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "api-test": "node ./base/api-test.js",
+    "dev": "nodemon ./base/api",
+    "dev-peer": "nodemon ./base/api --peer",
+    "start": "node ./base/api",
+    "betadev": "nodemon ./bin/www",
+    "beta": "node ./bin/www",
+    "test": "jest --watchALL"
+  },
+  "jest": {
+    "testEnvironment": "node"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/abhishekvispute/AutonomousSidechains.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/abhishekvispute/AutonomousSidechains/issues"
+  },
+  "homepage": "https://github.com/abhishekvispute/AutonomousSidechains#readme",
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "cookie-parser": "~1.4.3",
+    "core-js": "^3.6.5",
+    "debug": "~2.6.9",
+    "elliptic": "^6.5.2",
+    "express": "^4.17.1",
+    "express-sse": "^0.5.3",
+    "http-errors": "~1.6.2",
+    "jest": "^24.9.0",
+    "js-sha3": "^0.8.0",
+    "lodash": "^4.17.15",
+    "morgan": "~1.9.0",
+    "pubnub": "^4.27.3",
+    "pug": "2.0.0-beta11",
+    "socket.io": "^2.3.0",
+    "sync-request": "^6.1.0",
+    "uuid": "^7.0.3"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.3"
+  }
+}
