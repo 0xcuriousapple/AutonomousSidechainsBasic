@@ -87,12 +87,7 @@ router.get("/mine", (req, res) => {
 });
 
 router.post("/mine", (req, res, next) => {
-  // parsedBody = JSON.parse(req.body);
-  chosenTransactions = [];
-  for(let transaction of req.body.chosenTransactions) {
-    chosenTransactions.push(JSON.parse(transaction));
-  }
-
+  chosenTransactions = req.body.chosenTransactions;
   console.log("chosenTransactions-upd", chosenTransactions, "\ndone");
 
   const lastBlock = blockchain.chain[blockchain.chain.length - 1];

@@ -23,11 +23,9 @@ block scripts
         function updateTransactionList(num) {
             $n = event.target.nodeName;
             checkbox = $(`#transaction-item${num}`);
-            transaction = checkbox.val();
-            console.log("transaction", transaction);
+            transaction = JSON.parse(checkbox.val());
             if ($n != 'INPUT') {
                 $b2 = !$(checkbox).prop("checked");
-                console.log($b2, $n)
                 if($b2)
                     chosenTransactions.push(transaction)
                 else {
@@ -42,7 +40,7 @@ block scripts
             data = {
                 chosenTransactions: chosenTransactions
             }
-            console.log("called")
+            console.log("called", JSON.stringify(data));
             $.ajax({
                 type: 'POST',
                 url: './mine',
