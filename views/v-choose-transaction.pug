@@ -40,6 +40,7 @@ block scripts
             data = {
                 chosenTransactions: chosenTransactions
             }
+            $('input.transaction-item').prop("checked", false);
             console.log("called", JSON.stringify(data));
             $.ajax({
                 type: 'POST',
