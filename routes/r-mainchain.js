@@ -32,11 +32,7 @@ const account = new Account();
 const transaction = Transaction.createTransaction({ account });
 
 //sending data to dashboard
-let { obj } = {
-  obj: {
-    address: account.address,
-  },
-};
+let obj = { address: account.address };
 
 request.post(
   "https://bkdashboard.herokuapp.com/dashboardpeer",
@@ -58,7 +54,7 @@ request.post(
   }
 );
 //synchronization getting blocks from root
-//Pending : getting blocks from other peers decenterilized
+//Pending : getting blocks from other peers decentralized
 
 request("http://localhost:3000/mainchain/explorer", (error, response, body) => {
   const { chain } = JSON.parse(body);
@@ -83,12 +79,27 @@ router.get("/explorer", function (req, res, next) {
   res.json({ chain });
 });
 
-router.get("/mine", (req, res, next) => {
+router.get("/mine", (req, res) => {
+  console.log(transactionQueue.getTransactionSeries())
+  res.render("v-choose-transaction", {
+    transactionSeries: transactionQueue.getTransactionSeries()
+  })
+});
+
+router.post("/mine", (req, res, next) => {
+  // parsedBody = JSON.parse(req.body);
+  chosenTransactions = [];
+  for(let transaction of req.body.chosenTransactions) {
+    chosenTransactions.push(JSON.parse(transaction));
+  }
+
+  console.log("chosenTransactions-upd", chosenTransactions, "\ndone");
+
   const lastBlock = blockchain.chain[blockchain.chain.length - 1];
   const block = Block.mineBlock({
     lastBlock,
     beneficiary: account.address,
-    transactionSeries: transactionQueue.getTransactionSeries(),
+    transactionSeries: chosenTransactions,
     stateRoot: state.getStateRoot(),
   });
 
@@ -97,7 +108,7 @@ router.get("/mine", (req, res, next) => {
     .then(() => {
       pubsub.broadcastBlock(block);
 
-      res.json({ block });
+      res.send({ block });
     })
     .catch(next);
 });

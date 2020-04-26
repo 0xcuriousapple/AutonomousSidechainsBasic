@@ -1,0 +1,59 @@
+extend layout
+
+block content
+    div.transaction-form-div
+        - var i=0
+        form(action="./explorer" id='transaction-form' onsubmit="sendSeries()")
+            each transaction in transactionSeries
+                div.transaction(onclick="updateTransactionList("+i+")")
+                    input.transaction-item(id=`transaction-item${i}`, type="checkbox", value=transaction)
+                    h4 TransactionID
+                    p #{transaction.id}
+                    h5 Transaction amount 
+                    p #{transaction.value}
+                    h5 Transaction Type
+                    p #{transaction.data.type}
+                - i += 1
+            input(type="submit", value="Mine Selected Transactions")
+
+block scripts
+    script(type='text/javascript').
+        chosenTransactions = []
+
+        function updateTransactionList(num) {
+            $n = event.target.nodeName;
+            checkbox = $(`#transaction-item${num}`);
+            transaction = checkbox.val();
+            console.log("transaction", transaction);
+            if ($n != 'INPUT') {
+                $b2 = !$(checkbox).prop("checked");
+                console.log($b2, $n)
+                if($b2)
+                    chosenTransactions.push(transaction)
+                else {
+                    chosenTransactions = chosenTransactions.filter(tr => tr.id !== transaction.id);
+                }
+                console.log(chosenTransactions);
+                $(checkbox).prop("checked", $b2);
+            }
+        }
+
+        function sendSeries() {
+            data = {
+                chosenTransactions: chosenTransactions
+            }
+            console.log("called")
+            $.ajax({
+                type: 'POST',
+                url: './mine',
+                async: true,
+                data: JSON.stringify(data),
+                contentType: 'application/json',
+                dataType: 'json'
+            }).done((value) => {
+                alert("Block Sussessfully mined", value);
+                console.log("value", value);
+            }).fail(() => {
+                alert("error");
+            });
+        }
