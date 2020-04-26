@@ -3,7 +3,7 @@ extend layout
 block content
     div.transaction-form-div
         - var i=0
-        form(action="./explorer" id='transaction-form' onsubmit="sendSeries()")
+        form(id='transaction-form' )
             each transaction in transactionSeries
                 div.transaction(onclick="updateTransactionList("+i+")")
                     input.transaction-item(id=`transaction-item${i}`, type="checkbox", value=transaction)
@@ -36,7 +36,8 @@ block scripts
             }
         }
 
-        function sendSeries() {
+        $('div.transaction-form-div').on('submit', function (e) {
+            e.preventDefault();
             data = {
                 chosenTransactions: chosenTransactions
             }
@@ -49,10 +50,13 @@ block scripts
                 data: JSON.stringify(data),
                 contentType: 'application/json',
                 dataType: 'json'
-            }).done((value) => {
-                alert("Block Sussessfully mined", value);
-                console.log("value", value);
+            }).done(({ block }) => {
+                console.log("value", block);
+                block = JSON.stringify(block, undefined, 4);
+                pageUpdate = `<pre> ${block} </pre>`
+                $('div.transaction-form-div').html(pageUpdate);
+                alert("Block mined successfully");
             }).fail(() => {
                 alert("error");
             });
-        }
+        });

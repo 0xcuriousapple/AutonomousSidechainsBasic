@@ -83,7 +83,7 @@ router.get("/mine", (req, res) => {
   console.log(transactionQueue.getTransactionSeries())
   res.render("v-choose-transaction", {
     transactionSeries: transactionQueue.getTransactionSeries()
-  })
+  });
 });
 
 router.post("/mine", (req, res, next) => {
@@ -97,13 +97,13 @@ router.post("/mine", (req, res, next) => {
     transactionSeries: chosenTransactions,
     stateRoot: state.getStateRoot(),
   });
-
+  console.log("now mining");
   blockchain
     .addBlock({ block, transactionQueue })
     .then(() => {
       pubsub.broadcastBlock(block);
-
-      res.send({ block });
+      console.log("returning now with", block);
+      res.json({ block });
     })
     .catch(next);
 });
