@@ -210,10 +210,22 @@ router.get("/active/explorer", (req, res, next) => {
   res.json({ chain });
 });
 
-router.get("/active/mine", (req, res, next) => {
+router.get("/active/mine", (req, res) => {
   const { id } = req.query;
-  //console.log(sidechainStore[id]);
 
+  res.render("v-choose-transaction", {
+    sidechain: true,
+    transactionSeries: sidechainStore[id].transactionQueue.getTransactionSeries()
+  });
+})
+
+router.post("/active/mine", (req, res, next) => {
+  // const { id } = parseInt(req.body.id, 10);
+  const { id } = req.query;
+  
+  chosenTransactions = req.body.chosenTransactions;
+  console.log("chosenTransactions-upd", chosenTransactions, "\ndone");
+  
   const lastBlock =
     sidechainStore[id].blockchain.chain[
     sidechainStore[id].blockchain.chain.length - 1
@@ -221,9 +233,7 @@ router.get("/active/mine", (req, res, next) => {
   const block = Block.mineBlock({
     lastBlock,
     beneficiary: account.address,
-    transactionSeries: sidechainStore[
-      id
-    ].transactionQueue.getTransactionSeries(),
+    transactionSeries: chosenTransactions,
     stateRoot: sidechainStore[id].state.getStateRoot(),
   });
 

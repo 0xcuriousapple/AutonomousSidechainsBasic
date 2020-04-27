@@ -54,9 +54,14 @@ block scripts
             }
             $('input.transaction-item').prop("checked", false);
             console.log("called", JSON.stringify(data));
+
+            query = window.location.search;
+            const url = `./mine${query}`;
+            console.log(url);
+
             $.ajax({
                 type: 'POST',
-                url: './mine',
+                url: url,
                 async: true,
                 data: JSON.stringify(data),
                 contentType: 'application/json',
@@ -69,5 +74,6 @@ block scripts
                 alert("Block mined successfully");
             }).fail(() => {
                 alert("error");
+                window.location.reload();
             });
         });
