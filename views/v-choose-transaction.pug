@@ -20,19 +20,30 @@ block scripts
     script(type='text/javascript').
         chosenTransactions = []
 
+        function XOR(a, b) {
+            return (!a && b) || (a && !b);
+        }
+
         function updateTransactionList(num) {
             $n = event.target.nodeName;
             checkbox = $(`#transaction-item${num}`);
             transaction = JSON.parse(checkbox.val());
+        
+            $b2 = XOR(!$(checkbox).prop("checked"), $n == 'INPUT' );
+
+            console.log("update", $b2);
+            if($b2)
+                chosenTransactions.push(transaction);
+            else {
+                chosenTransactions = chosenTransactions.filter(tr => tr.id !== transaction.id);
+            }
+            console.log(chosenTransactions);
+
             if ($n != 'INPUT') {
-                $b2 = !$(checkbox).prop("checked");
-                if($b2)
-                    chosenTransactions.push(transaction)
-                else {
-                    chosenTransactions = chosenTransactions.filter(tr => tr.id !== transaction.id);
-                }
-                console.log(chosenTransactions);
                 $(checkbox).prop("checked", $b2);
+            }
+            else {
+
             }
         }
 
