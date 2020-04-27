@@ -5,12 +5,16 @@
   "main": "index.js",
   "scripts": {
     "api-test": "node ./base/api-test.js",
+    "api-test-main": "node ./testing/api-test-mainchain.js",
+    "api-test-side": "node ./testing/api-test-sidechain.js",
     "dev": "nodemon ./base/api",
     "dev-peer": "nodemon ./base/api --peer",
     "start": "node ./base/api",
     "betadev": "nodemon ./bin/www",
     "beta": "node ./bin/www",
-    "test": "jest --watchALL"
+    "test": "jest --watchALL",
+    "ml": "NODE_ENV=development parcel ./testing/machine-learning/index.html --no-hmr --open --no-autoinstall",
+    "temp": "node ./testing/temp.js"
   },
   "jest": {
     "testEnvironment": "node"
@@ -27,6 +31,8 @@
   },
   "homepage": "https://github.com/abhishekvispute/AutonomousSidechains#readme",
   "dependencies": {
+    "@tensorflow/tfjs": "^1.7.3",
+    "@tensorflow/tfjs-vis": "^1.4.0",
     "body-parser": "^1.19.0",
     "cookie-parser": "~1.4.3",
     "core-js": "^3.6.5",
@@ -46,6 +52,7 @@
     "uuid": "^7.0.3"
   },
   "devDependencies": {
-    "nodemon": "^2.0.3"
+    "nodemon": "^2.0.3",
+    "parcel-bundler": "^1.12.4"
   }
 }
