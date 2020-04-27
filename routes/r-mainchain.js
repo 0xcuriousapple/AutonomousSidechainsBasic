@@ -32,7 +32,11 @@ const account = new Account();
 const transaction = Transaction.createTransaction({ account });
 
 //sending data to dashboard
-let obj = { address: account.address };
+let { obj } = {
+  obj: {
+    address: account.address,
+  },
+};
 
 request.post(
   "https://bkdashboard.herokuapp.com/dashboardpeer",
@@ -79,6 +83,32 @@ router.get("/explorer", function (req, res, next) {
   res.json({ chain });
 });
 
+router.get("/address", function (req, res, next) {
+  const { address } = account.address;
+  res.json({ address });
+})
+router.get("/txqueue", function (req, res, next) {
+  res.json(transactionQueue);
+});
+router.get("/mine_direct", (req, res, next) => {
+  const lastBlock = blockchain.chain[blockchain.chain.length - 1];
+  const block = Block.mineBlock({
+    lastBlock,
+    beneficiary: account.address,
+    transactionSeries: transactionQueue.getTransactionSeries(),
+    stateRoot: state.getStateRoot(),
+  });
+
+  blockchain
+    .addBlock({ block, transactionQueue })
+    .then(() => {
+      pubsub.broadcastBlock(block);
+
+      res.json({ block });
+    })
+    .catch(next);
+});
+
 router.get("/mine", (req, res) => {
   console.log(transactionQueue.getTransactionSeries())
   res.render("v-choose-transaction", {
@@ -108,6 +138,17 @@ router.post("/mine", (req, res, next) => {
     .catch(next);
 });
 
+
+router.get("/balance", (req, res, next) => {
+  const { address } = req.query;
+
+  const balance = Account.calculateBalance({
+    address: address || account.address,
+    state,
+  });
+
+  res.json({ balance });
+});
 /*
 Pending
 
@@ -178,17 +219,11 @@ router.post("/transfer", function (req, res, next) {
   res.json({ transaction });
 });
 
-var sse = new SSE();
-router.get('/stream', sse.init);
-
-router.get("/trie", function (req, res, next) {
-  res.render("v-trie", {
-    title: "State Trie"
-  });
-  sse.send('message');
-  sse.send('message', 'message');
-  //sse.send('message', eventName);
-
-
+router.post("/create", function (req, res, next) {
+  const account2 = new Account();
+  const transaction = Transaction.createTransaction({ account: account2 });
+  pubsub.broadcastTransaction(transaction);
+  res.json({ transaction });
 });
+
 module.exports = router;
