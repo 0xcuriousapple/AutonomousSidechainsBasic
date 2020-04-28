@@ -38,25 +38,25 @@ let { obj } = {
   },
 };
 
-request.post(
-  "https://bkdashboard.herokuapp.com/dashboardpeer",
-  {
-    json: {
-      obj,
-    },
-  },
-  (error, res, body) => {
-    if (error) {
-      // console.error(error);
-      console.log("---Chrome : socket closed after 2 min")
-    }
-    else {
-      console.log(`statusCode: ${res.statusCode}`);
-      console.log(body);
-    }
+// request.post(
+//   "https://bkdashboard.herokuapp.com/dashboardpeer",
+//   {
+//     json: {
+//       obj,
+//     },
+//   },
+//   (error, res, body) => {
+//     if (error) {
+//       // console.error(error);
+//       console.log("---Chrome : socket closed after 2 min")
+//     }
+//     else {
+//       console.log(`statusCode: ${res.statusCode}`);
+//       console.log(body);
+//     }
 
-  }
-);
+//   }
+// );
 //synchronization getting blocks from root
 //Pending : getting blocks from other peers decentralized
 

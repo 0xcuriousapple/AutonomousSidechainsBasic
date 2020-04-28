@@ -29,7 +29,7 @@ function draw(data) {
 
 }
 window.onload = function () {
-    var socket = io();
+    //var socket = io();
     let data;
     socket.on("data", function (msg) {
         data = msg;

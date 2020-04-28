@@ -18,25 +18,25 @@ class Blockchain {
           this.chain.push(block);
 
           Block.runBlock({ block, state: this.state });
-          request.post(
-            "https://bkdashboard.herokuapp.com/dashboardblock",
-            {
-              json: {
-                block,
-              },
-            },
-            (error, res, body) => {
-              if (error) {
-                console.log("---Chrome : socket closed after 2 min")
-                //console.error(error);
+          // request.post(
+          //   "https://bkdashboard.herokuapp.com/dashboardblock",
+          //   {
+          //     json: {
+          //       block,
+          //     },
+          //   },
+          //   (error, res, body) => {
+          //     if (error) {
+          //       console.log("---Chrome : socket closed after 2 min")
+          //       //console.error(error);
 
-              }
-              else {
-                console.log(`statusCode: ${res.statusCode}`);
-                console.log(body);
-              }
-            }
-          );
+          //     }
+          //     else {
+          //       console.log(`statusCode: ${res.statusCode}`);
+          //       console.log(body);
+          //     }
+          //   }
+          // );
 
           transactionQueue.clearBlockTransactions({
             transactionSeries: block.transactionSeries,

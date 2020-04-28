@@ -101,28 +101,27 @@ async function Transact(toAccountData) {
 
 };
 postCreateAcc({}).then((postResponse) => {
-  console.log(
-    "(Create Account Transaction)"
-  )
+  console.log("(Create Account Transaction)")
   toAccountData = postResponse.transaction.data.accountData;
   return waitfor_x_txs(2);
-}).then(() => { return getMine(); })
-  .then(() => {
-    return Transact(toAccountData);
-  }).then(() => {
-    fs.writeFile(
-      "./testing/performance_analysis/data/test.json",
-      JSON.stringify(results),
-      (err) => {
-        if (err) {
-          console.log("Error writing file", err);
-        } else {
-          console.log("Successfully wrote file");
-        }
+}).then(() => {
+  return getMine();
+}).then(() => {
+  return Transact(toAccountData);
+}).then(() => {
+  fs.writeFile(
+    "./testing/performance_analysis/data/test.json",
+    JSON.stringify(results),
+    (err) => {
+      if (err) {
+        console.log("Error writing file", err);
+      } else {
+        console.log("Successfully wrote file");
       }
-    );
+    }
+  );
 
-  })
+})
 
 
 

@@ -17,7 +17,7 @@ const SECONDS = 1000 * MILLISECONDS;
 const MINE_RATE = 13 * SECONDS;
 
 const STARTING_BALANCE = 1000;
-const MINING_REWARD = 1;
+const MINING_REWARD = 0;
 
 module.exports = {
   GENESIS_DATA,

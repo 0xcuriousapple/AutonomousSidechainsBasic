@@ -22,18 +22,17 @@ router.get("/new", function (req, res, next) {
 });
 
 router.post("/new/success", function (req, res, next) {
-  // const credentials = {
-  //   publishKey: req.body.pubkey,
-  //   subscribeKey: req.body.pubkey,
-  //   secretKey: req.body.pubkey,
-  // };
-
-  //for testing purpose keeping it constant
   const credentials = {
-    publishKey: "pub-c-b4ef5ca9-5b50-44f5-a57e-0894ab85c8b1",
-    subscribeKey: "sub-c-1a6ad124-7d8f-11ea-8ca3-9e2d2a3ca26d",
-    secretKey: "sec-c-NzdhNDFlOTgtNmZlMy00YWJkLTk3YzUtMWM1ZTMzM2ZiYWY4",
+    publishKey: req.body.pubkey,
+    subscribeKey: req.body.subkey,
+    secretKey: req.body.seckey,
   };
+  //for testing purpose keeping it constant
+  // const credentials = {
+  //   publishKey: "pub-c-b4ef5ca9-5b50-44f5-a57e-0894ab85c8b1",
+  //   subscribeKey: "sub-c-1a6ad124-7d8f-11ea-8ca3-9e2d2a3ca26d",
+  //   secretKey: "sec-c-NzdhNDFlOTgtNmZlMy00YWJkLTk3YzUtMWM1ZTMzM2ZiYWY4",
+  // };
   //Saving credentials to file
   const jsonString = JSON.stringify(credentials);
   id = Object.keys(sidechainStore).length;
@@ -72,24 +71,24 @@ router.post("/new/success", function (req, res, next) {
       id: this.id
     },
   };
-  request.post(
-    "https://bkdashboard.herokuapp.com/dashboardsidechain",
-    {
-      json: {
-        obj,
-      },
-    },
-    (error, res, body) => {
-      if (error) {
-        //console.error(error);
-        console.log("---Chrome : socket closed after 2 min")
-      }
-      else {
-        console.log(`statusCode: ${res.statusCode}`);
-        console.log(body);
-      }
-    }
-  );
+  // request.post(
+  //   "https://bkdashboard.herokuapp.com/dashboardsidechain",
+  //   {
+  //     json: {
+  //       obj,
+  //     },
+  //   },
+  //   (error, res, body) => {
+  //     if (error) {
+  //       //console.error(error);
+  //       console.log("---Chrome : socket closed after 2 min")
+  //     }
+  //     else {
+  //       console.log(`statusCode: ${res.statusCode}`);
+  //       console.log(body);
+  //     }
+  //   }
+  // );
 
   //console.log(Object.keys(sidechainStore).length);
 
@@ -193,9 +192,6 @@ router.get("/active", (req, res, next) => {
 });
 
 router.get("/active/index", (req, res, next) => {
-  console.log("Sdss");
-  console.log(Object.keys(sidechainStore).length);
-  console.log(req.query);
   res.render("v-sidechain-active-index", {
     title: sidechainStore[req.query.id].name,
     id: req.query.id,
@@ -209,7 +205,32 @@ router.get("/active/explorer", (req, res, next) => {
   const { chain } = blockchain;
   res.json({ chain });
 });
+router.get("/active/mine_direct", (req, res, next) => {
+  const { id } = req.query;
+  //console.log(sidechainStore[id]);
 
+  const lastBlock =
+    sidechainStore[id].blockchain.chain[
+    sidechainStore[id].blockchain.chain.length - 1
+    ];
+  const block = Block.mineBlock({
+    lastBlock,
+    beneficiary: account.address,
+    transactionSeries: sidechainStore[
+      id
+    ].transactionQueue.getTransactionSeries(),
+    stateRoot: sidechainStore[id].state.getStateRoot(),
+  });
+
+  sidechainStore[id].blockchain
+    .addBlock({ block, transactionQueue: sidechainStore[id].transactionQueue })
+    .then(() => {
+      sidechainStore[id].pubsub.broadcastBlock(block);
+
+      res.json({ block });
+    })
+    .catch(next);
+});
 router.get("/active/mine", (req, res) => {
   const { id } = req.query;
 
@@ -222,10 +243,10 @@ router.get("/active/mine", (req, res) => {
 router.post("/active/mine", (req, res, next) => {
   // const { id } = parseInt(req.body.id, 10);
   const { id } = req.query;
-  
+
   chosenTransactions = req.body.chosenTransactions;
   console.log("chosenTransactions-upd", chosenTransactions, "\ndone");
-  
+
   const lastBlock =
     sidechainStore[id].blockchain.chain[
     sidechainStore[id].blockchain.chain.length - 1
@@ -246,7 +267,10 @@ router.post("/active/mine", (req, res, next) => {
     })
     .catch(next);
 });
-
+router.get("/active/txqueue", function (req, res, next) {
+  const { id } = req.query;
+  res.json(sidechainStore[id].transactionQueue);
+});
 router.get("/active/wallet", (req, res, next) => {
   //console.log(account.address);
   const { id } = req.query;
@@ -257,13 +281,12 @@ router.get("/active/wallet", (req, res, next) => {
   res.render("v-wallet", {
     title: "Wallet",
     address: account.address,
-
+    id: id,
     balance: balance,
   });
 });
 
-router.get("/active/wallet/transfer", (req, res, next) => {
-  //console.log(account.address);
+router.post("/active/transfer", function (req, res, next) {
   const { id } = req.query;
   to = req.body.to;
   value = parseInt(req.body.value);
@@ -273,6 +296,14 @@ router.get("/active/wallet/transfer", (req, res, next) => {
     to,
     value,
   });
+  sidechainStore[id].pubsub.broadcastTransaction(transaction);
+  res.json({ transaction });
+});
+
+router.post("/active/create", function (req, res, next) {
+  const { id } = req.query;
+  const account2 = new Account();
+  const transaction = Transaction.createTransaction({ account: account2 });
   sidechainStore[id].pubsub.broadcastTransaction(transaction);
   res.json({ transaction });
 });
