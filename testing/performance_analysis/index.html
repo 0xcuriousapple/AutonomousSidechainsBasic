@@ -3,15 +3,43 @@
 
 <head>
     <meta charset="utf-8">
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-vis@1.4.0/dist/tfjs-vis.umd.min.js"></script>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
     <script src="/index.js"></script>
 
 
     <style>
+        :-webkit-any(article, aside, nav, section) h1 {
+            font-size: 1.5em;
+            margin-block-start: 0.83em;
+            margin-block-end: 0.83em;
+        }
+
+        @font-face {
+            font-family: "my-font";
+            src: url(data:font/truetype;charset=utf-8;base64,T1R...gP5w/kP+RAA format("opentype");
+        }
+
+        h1 {
+            display: block;
+            font-size: 2em;
+            /* font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"; */
+            margin-block-start: 0.67em;
+            margin-block-end: 0.67em;
+            margin-inline-start: 0px;
+            margin-inline-end: 0px;
+            font-weight: bold;
+        }
+
+        body {
+            font-family: "my-font";
+        }
+
         article {
             max-width: 960px;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
             padding: 40px;
         }
 
@@ -29,8 +57,26 @@
             margin-bottom: 25px;
         }
 
-        h3 {
-            margin-top: 60px;
+
+        h5 {
+            margin-block-start: 0.67em;
+            margin-block-end: 0.67em;
+            margin-inline-start: 0px;
+            margin-inline-end: 0px;
+            font-weight: bold;
+        }
+
+        h6 {
+            margin-block-start: 0.67em;
+            margin-block-end: 0.67em;
+            margin-inline-start: 0px;
+            margin-inline-end: 0px;
+            font-weight: bold;
+            font-size: 1rem;
+        }
+
+        td {
+            padding-left: 18px;
         }
     </style>
 </head>
@@ -38,19 +84,240 @@
 <body>
     <article>
         <h1>Autonomous Sidechain Performance Analysis</h1>
+        <div class="t">
+            <h5>Testing Methodology</h5>
+            <ul>
+                <li>We tested 1000 tx in batch of 100 tx and recoreded time required for the batch of tx to get added in
+                    the global state.
+                </li>
+                <li>We Started with 0 sidechains and then incremented it by 1 till 5 sidechains.
+                </li>
+                <li>
+                    Structure
+                    <table>
+                        <tbody>
+                            <tr>
+                                <th scope="row">Test-[no]</th>
+                            </tr>
+                            <tr>
+                                <th scope="row">Chain </th>
+                                <td>Mainchain and [0-5] sidechains</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Block size </th>
+                                <td>No of Tx in one block</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">TX Allotment </th>
+                                <td>Percentage of tx deployed on single chain</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Result </th>
+                                <td>Table of Tx (100-1000) vs Time for completion</td>
+                            </tr>
 
+                        </tbody>
+                    </table>
+                </li>
+            </ul>
+            (Example: Suppose There are Mainchain and 2 sidechains and
+            TX allotment is 33%
+            then in batch of 100, 33 will be posted on Mainchain, 33 on 1st Sidechain and 34 on 2nd
+            Sidechain)
+        </div>
         <section>
             <p>
-                Used Module : tfjs-vis
-                tfjs-vis is a small set of visualization utilities to make it easier to understand what is going on with
-                your
+                <h5>Testing Results</h5>
+                <div class="t">
+                    <h6>Test-1</h6>
+                    <table>
+                        <tbody>
+                            <tr>
+                                <th scope="row">Chain </th>
+                                <td>Mainchain only</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Block size </th>
+                                <td>10 tx</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">TX Allotment </th>
+                                <td>100% on chain</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <h6>Result</h6>
+                    <div id='t1t'></div>
+                    <div id='t1g'></div>
+                </div>
+                <div class="t">
+                    <h6>Test-2</h6>
+                    <table>
+                        <tbody>
+                            <tr>
+                                <th scope="row">Chain </th>
+                                <td>Mainchain and 1 Sidechain</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Block size </th>
+                                <td>10 tx</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">TX Allotment </th>
+                                <td>50% on chain</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <h6>Result</h6>
+                    <div id='t2t'></div>
+                    <div id='t2g'></div>
+                </div>
+                <div class="t">
+                    <h6>Test-3</h6>
+                    <table>
+                        <tbody>
+                            <tr>
+                                <th scope="row">Chain </th>
+                                <td>Mainchain and 2 Sidechains</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Block size </th>
+                                <td>10 tx mostly (3 tx, 4 tx in special case)*</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">TX Allotment </th>
+                                <td>33% on each chain.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <h6>Result</h6>
+                    <div id='t3t'></div>
+                    <div id='t3g'></div>
+                </div>
+                <div class="t">
+                    <h6>Test-4</h6>
+                    <table>
+                        <tbody>
+                            <tr>
+                                <th scope="row">Chain </th>
+                                <td>Mainchain and 3 Sidechains</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Block size </th>
+                                <td>10 tx mostly (5 tx in special case)*</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">TX Allotment </th>
+                                <td>25% on each chain.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <h6>Result</h6>
+                    <div id='t4t'></div>
+                    <div id='t4g'></div>
+                </div>
+                <div class="t">
+                    <h6>Test-5</h6>
+                    <table>
+                        <tbody>
+                            <tr>
+                                <th scope="row">Chain </th>
+                                <td>Mainchain and 4 Sidechains</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Block size </th>
+                                <td>10 tx mostly</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">TX Allotment </th>
+                                <td>20% on each chain.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <h6>Result</h6>
+                    <div id='t5t'></div>
+                    <div id='t5g'></div>
+                </div>
+                <div class="t">
+                    <h6>Test-6</h6>
+                    <table>
+                        <tbody>
+                            <tr>
+                                <th scope="row">Chain </th>
+                                <td>Mainchain and 5 Sidechains</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Block size </th>
+                                <td>10 tx mostly (6 tx, 7 tx in special case)*</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">TX Allotment </th>
+                                <td>16% on each chain.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <h6>Result</h6>
+                    <div id='t6t'></div>
+                    <div id='t6g'></div>
+                </div>
+                <div class="t">
+                    <h5>Conclusion</h5>
+                    <div id='t1t'></div>
+                    <div id='t1g'></div>
+                </div>
             </p>
 
         </section>
 
         <section>
-            <div id='linechart-cont'></div>
+            <ul>
+                <li>
+                    <h6>Line-chart: Transactions vs Time</h6>
+                    On X axis : 1 unit = 100 tx
+                    <div>On Y axis : 1 unit = 50,000 ms</div>
+                    <div id='linechart-cont'></div>
+                    From chart, We can see that as no of sidechains increase, time required to perform "x" no of tx
+                    decreases.
+                    <div>Thus, Its proved that
+                    </div>
+                    <h6>Time required for "x" tx ∝ 1/ (No of sidechains)</h6>
+                    <div></div>
+                </li>
+                <li>
+                    <h6>Transactions per second (TPS)</h6>
 
+                    <div id="tps""></div>
+                    From this table, we can see that as no of sidechains increase, TPS also increases.
+                    <div> Percentage increase in TPS per sidechain is <div id='peri'></div>
+                    </div>
+                    <h6>Throughput ∝ TPS ∝  No of sidechains</h6>
+                    <div></div>
+                </li>
+
+            </ul>
+            <div></div>
+            <h6>End of the Analysis</h6>
+            <div></div>
+            <a href=" https://youtu.be/3OmRe9pA0Pc">*Video of Test-5</a>
+                        </br> <a href="https://youtu.be/gUnakY99mgM">*Video of Test-6</a>
+
+                        </br>*Special case arrives when TX allotment is not multiple of 10. in that case at last we have
+                        to mine TX allotment%10
+                        </br>Example : Case of TX allotment 33%
+                        <div>We have 1 mainchain and 2 sidechains, we allot 33 tx on main,33 tx on 1st sidechain and
+                            34 tx on 2nd sidechain</br>
+                            Now focus on any chain, consider 2nd sidechain.(34-tx) </br>
+                            Batch of 10 tx arrive 3 times, and get mined in the respective blocks</br>
+                            and then 4 tx arrive, as we want reults in batch of 100</br>
+                            We have to mine this block now only.</br>
+                            Thats where special case arrives.</br>
+                        </div>
+                        *Testing Environment
+                        </br>Difficulty 1000
+                        </br>Bandwidth 1.2 Mbps
+                        </br>Processor Intel(R) Core(TM) i5-7200U CPU @ 2.50GHz
+                        </br>RAM 12 GB
+                        </br>Operating System Windows 10
 
         </section>
     </article>

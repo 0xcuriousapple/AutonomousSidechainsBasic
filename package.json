@@ -6,14 +6,14 @@
   "scripts": {
     "api-test": "node ./base/api-test.js",
     "api-test-main": "node ./testing/api-test-mainchain.js",
-    "api-test-side": "node ./testing/api-test-sidechain.js",
+    "api-test-side": "node ./testing/api-test-sidechain-Jugad.js",
     "dev": "nodemon ./base/api",
     "dev-peer": "nodemon ./base/api --peer",
     "start": "node ./base/api",
     "betadev": "nodemon ./bin/www",
     "beta": "node ./bin/www",
     "test": "jest --watchALL",
-    "ml": "NODE_ENV=development parcel ./testing/machine-learning/index.html --no-hmr --open --no-autoinstall",
+    "report": "node ./testing/performance_analysis/server.js",
     "temp": "node ./testing/temp.js"
   },
   "jest": {

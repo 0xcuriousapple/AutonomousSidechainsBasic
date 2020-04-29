@@ -110,7 +110,7 @@ postCreateAcc({}).then((postResponse) => {
   return Transact(toAccountData);
 }).then(() => {
   fs.writeFile(
-    "./testing/performance_analysis/data/test.json",
+    "./testing/performance_analysis/data/Mainchain.json",
     JSON.stringify(results),
     (err) => {
       if (err) {

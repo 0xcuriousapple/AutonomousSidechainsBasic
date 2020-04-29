@@ -25,11 +25,32 @@ app.get("/", function (req, res) {
 app.get("/index.js", function (req, res) {
     res.sendFile("/index.js", { root: __dirname });
 });
-
-fs.readFile(`./data/test.json`, (err, data) => {
+let obj = {};
+fs.readFile(`./testing/performance_analysis/data/Mainchain.json`, (err, data) => {
     if (err) throw err;
-    obj = JSON.parse(data);
-    console.log(obj);
+    obj.m = JSON.parse(data);
+});
+
+fs.readFile(`./testing/performance_analysis/data/Sidechain-1.json`, (err, data) => {
+    if (err) throw err;
+    obj.s1 = JSON.parse(data);
+});
+
+fs.readFile(`./testing/performance_analysis/data/Sidechain-2.json`, (err, data) => {
+    if (err) throw err;
+    obj.s2 = JSON.parse(data);
+});
+fs.readFile(`./testing/performance_analysis/data/Sidechain-3.json`, (err, data) => {
+    if (err) throw err;
+    obj.s3 = JSON.parse(data);
+});
+fs.readFile(`./testing/performance_analysis/data/Sidechain-4.json`, (err, data) => {
+    if (err) throw err;
+    obj.s4 = JSON.parse(data);
+});
+fs.readFile(`./testing/performance_analysis/data/Sidechain-5.json`, (err, data) => {
+    if (err) throw err;
+    obj.s5 = JSON.parse(data);
 });
 
 io.on("connection", (socket) => {
